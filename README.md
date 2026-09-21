@@ -16,7 +16,7 @@ ClusterClass `builtin-generic-v3.6.0`.
 
 ## Applying
 
-### 1. The add-on — to the Supervisor
+### 1. The add-on to the Supervisor
 
 `addon.yaml` ships with placeholders. Replace them first:
 
