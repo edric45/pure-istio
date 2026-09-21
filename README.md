@@ -148,3 +148,15 @@ label the backing Service `istio.io/ingress-use-waypoint=true`.
 level. istiod reads a Secret named `cacerts` in `istio-system` directly, so a
 plug-in CA is achievable without add-on support — but istiod does not
 hot-reload it, so rotation requires an istiod restart.
+
+
+How the mode is actually chosen
+It's determined by what exists, not declared by a value. istiod decides at startup:
+
+Mode	How you select it
+istiod self-signed	do nothing — this is the fallback
+Plug-in CA	create a Secret named cacerts in istio-system
+cert-manager istio-csr	reconfigure istiod's env + volumes to point at istio-csr
+So for plug-in CA, the "setting" is the presence of the Secret. istiod looks for cacerts on startup; finds it, uses it; doesn't, generates its own. That's upstream Istio behaviour — nothing VMware added or removed.
+
+That's why our ca/ manifests aren't addon config at all. They're just a Certificate and a SecretTemplate applied to the workload cluster, producing a Secret with the right name and keys. The addon never knows about it.
